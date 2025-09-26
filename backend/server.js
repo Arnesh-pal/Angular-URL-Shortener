@@ -9,14 +9,15 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // ========================================================================
-// START: THE FINAL CORS FIX
+// START: MORE ROBUST CORS CONFIGURATION
 // ========================================================================
 // Define the list of allowed "guests" (origins)
 const allowedOrigins = ['http://localhost:4200', 'https://surluu.vercel.app'];
 
 const corsOptions = {
     origin: function (origin, callback) {
-        // Check if the incoming origin is in our guest list
+        // Allow requests with no origin (like mobile apps or curl requests)
+        // or if the origin is in our whitelist.
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
@@ -28,9 +29,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 // ========================================================================
-// END: THE FINAL CORS FIX
+// END: MORE ROBUST CORS CONFIGURATION
 // ========================================================================
-
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -41,7 +41,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // --- API ROUTES ---
-// (The rest of your file remains the same)
+
 // GET all URLs
 app.get('/api/urls', async (req, res) => {
     try {
@@ -59,7 +59,10 @@ app.post('/api/shorten', async (req, res) => {
         return res.status(400).json({ message: 'originalUrl is required' });
     }
     const shortCode = shortid.generate();
-    const shortUrl = `https://rshortr-url.vercel.app/${shortCode}`; // Use your live backend URL
+    // ========================================================================
+    // Use your actual backend domain for creating the link
+    const shortUrl = `https://rshortr-url.vercel.app/${shortCode}`;
+    // ========================================================================
 
     try {
         let url = await Url.findOne({ originalUrl });
@@ -92,4 +95,9 @@ app.get('/:shortCode', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => console.log(`Backend server running on port ${PORT}`));
+// This is for local development only; Vercel handles the server.
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => console.log(`Backend server running on port ${PORT}`));
+}
+
+module.exports = app; // Export the app for Vercel
