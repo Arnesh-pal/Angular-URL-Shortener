@@ -1,0 +1,95 @@
+<div class="mx-auto w-full max-w-2xl text-center">
+    <!-- FoxMascot SVG -->
+    <div class="group relative mb-8">
+        <svg width="150" height="150" viewBox="0 0 200 200" class="mx-auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="fox-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color: #ff00c1; stop-opacity: 1" />
+                    <stop offset="100%" style="stop-color: #00f6ff; stop-opacity: 1" />
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                    <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+            <g filter="url(#glow)" class="transition-transform duration-500 group-hover:scale-110">
+                <path d="M100 20 L40 90 L70 120 L100 100 L130 120 L160 90 Z" fill="url(#fox-gradient)" />
+                <path d="M40 90 L20 60 L50 70 Z" fill="url(#fox-gradient)" />
+                <path d="M160 90 L180 60 L150 70 Z" fill="url(#fox-gradient)" />
+                <path d="M100 100 L90 125 L110 125 Z" fill="#ffffff" />
+            </g>
+        </svg>
+        <div
+            class="absolute -z-10 top-0 left-0 h-full w-full rounded-full bg-fuchsia-500 opacity-20 blur-3xl transition-opacity duration-500 group-hover:opacity-40">
+        </div>
+    </div>
+
+    <h1 class="mb-2 font-['Orbitron'] text-4xl font-bold uppercase tracking-wider text-gray-100 md:text-5xl"
+        style="text-shadow: 0 0 10px #ff00c1, 0 0 20px #ff00c1">
+        URL Shortener
+    </h1>
+    <p class="mb-8 text-lg text-cyan-300">Condense the web. One link at a time.</p>
+
+    <form (submit)="onUrlSubmit($event)" class="relative flex w-full flex-col items-center gap-4 sm:flex-row">
+        <div class="relative w-full">
+            <div class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+                <!-- LinkIcon SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="text-cyan-400">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
+                </svg>
+            </div>
+            <input type="url" placeholder="Enter a long URL to digitize..." required
+                class="w-full rounded-lg border-2 border-cyan-400/30 bg-gray-900/50 py-3 pl-12 pr-4 text-white placeholder-gray-500 transition-all duration-300 focus:border-fuchsia-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" />
+        </div>
+        <button type="submit" [disabled]="isLoading()"
+            class="flex w-full items-center justify-center gap-2 rounded-lg bg-fuchsia-600 px-6 py-3 font-bold text-white shadow-[0_0_15px_rgba(255,0,193,0.5)] transition-all duration-300 hover:bg-fuchsia-700 hover:shadow-[0_0_25px_rgba(255,0,193,0.8)] focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
+            @if (isLoading()) {
+            <div class="h-5 w-5 animate-spin rounded-full border-t-2 border-white"></div>
+            <span>Shortening...</span>
+            } @else {
+            <span>Shorten</span>
+            }
+        </button>
+    </form>
+
+    @if (errorMessage()) { <p class="animate-pulse mt-4 text-sm text-red-400">{{ errorMessage() }}</p> }
+
+    <!-- Use url.shortUrl which is provided by the backend -->
+    @if (lastShortenedUrl(); as url) {
+    <div class="animate-fade-in-up mt-8 rounded-lg border border-cyan-400/30 bg-gray-900/50 p-4 text-left">
+        <p class="mb-2 text-sm text-cyan-300">Your condensed link:</p>
+        <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <a [href]="url.shortUrl" target="_blank" rel="noopener noreferrer"
+                class="break-all font-mono text-lg text-fuchsia-400 hover:underline" (click)="onShortUrlClick()">
+                {{ url.shortUrl }}
+            </a>
+            <button (click)="copyToClipboard(url.shortUrl!)"
+                class="flex w-full items-center justify-center gap-2 rounded-lg border border-cyan-400 bg-cyan-600/50 px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-cyan-500 sm:w-auto">
+                @if(isCopied()) {
+                <!-- CheckIcon SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="text-green-400">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Copied!</span>
+                } @else {
+                <!-- ClipboardIcon SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+                }
+            </button>
+        </div>
+    </div>
+    }
+</div>

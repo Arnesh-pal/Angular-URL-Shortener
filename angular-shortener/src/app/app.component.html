@@ -1,0 +1,64 @@
+<!-- Main container with dark background -->
+<div class="relative min-h-screen w-full overflow-hidden bg-[#0d0221]">
+    <!-- Grid Layer -->
+    <div
+        class="absolute h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:3rem_3rem]">
+    </div>
+    <!-- Radial Gradient Layer -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_200px,#3e0a7533,transparent)]"></div>
+    <!-- Animated Blobs -->
+    <div
+        class="animate-pulse-glow absolute bottom-0 left-0 h-96 w-96 -translate-x-1/2 translate-y-1/2 rounded-full bg-cyan-500/20 blur-3xl">
+    </div>
+    <div
+        class="animate-pulse-glow absolute right-0 top-0 h-96 w-96 translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-500/20 blur-3xl [animation-delay:4s]">
+    </div>
+
+    <!-- Content container, needs z-10 to be above the background -->
+    <div class="relative z-10 mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
+        <header class="flex justify-center py-4">
+            <nav
+                class="flex items-center gap-2 rounded-full border border-cyan-400/10 bg-gray-900/40 p-2 backdrop-blur-lg">
+                <a routerLink="/" routerLinkActive="bg-fuchsia-600 shadow-[0_0_15px_rgba(255,0,193,0.5)]"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-slate-200 transition-all duration-300 ease-in-out hover:bg-gray-800/50">
+                    <!-- HomeIcon SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Home
+                </a>
+                <a routerLink="/admin" routerLinkActive="bg-fuchsia-600 shadow-[0_0_15px_rgba(255,0,193,0.5)]"
+                    class="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-slate-200 transition-all duration-300 ease-in-out hover:bg-gray-800/50">
+                    <!-- AdminIcon SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    Admin
+                </a>
+            </nav>
+        </header>
+
+        <main class="mt-8">
+            <router-outlet></router-outlet>
+        </main>
+
+        <!-- ================================================================= -->
+        <!-- START: UPDATED FOOTER                                             -->
+        <!-- ================================================================= -->
+        <footer class="mt-16 text-center text-xs text-slate-500">
+            <a href="https://arneshpal000.netlify.app/" target="_blank" rel="noopener noreferrer"
+                class="transition-colors hover:text-cyan-300">
+                Designed by Arnesh Pal
+            </a>
+        </footer>
+        <!-- ================================================================= -->
+        <!-- END: UPDATED FOOTER                                               -->
+        <!-- ================================================================= -->
+
+    </div>
+</div>
