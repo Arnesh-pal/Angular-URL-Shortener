@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'YOUR_PRODUCTION_BACKEND_URL' // You will replace this with your Vercel URL
+    apiUrl: 'https://rshortr-url.vercel.app/' // You will replace this with your Vercel URL
 };
