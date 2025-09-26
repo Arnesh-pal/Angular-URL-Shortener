@@ -8,14 +8,31 @@ const Url = require('./models/url');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// This explicit configuration is the most robust way to handle CORS.
+// ========================================================================
+// START: THE FINAL CORS FIX
+// ========================================================================
+// Define the list of allowed "guests" (origins)
+const allowedOrigins = ['http://localhost:4200', 'https://surluu.vercel.app'];
+
 const corsOptions = {
-    origin: 'http://localhost:4200', // Allow only your Angular app
+    origin: function (origin, callback) {
+        // Check if the incoming origin is in our guest list
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     optionsSuccessStatus: 200
 };
-app.use(cors(corsOptions));
 
-// This middleware must come after CORS but before your routes.
+app.use(cors(corsOptions));
+// ========================================================================
+// END: THE FINAL CORS FIX
+// ========================================================================
+
+
+// Middleware to parse JSON bodies
 app.use(express.json());
 
 // Connect to MongoDB
@@ -24,7 +41,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // --- API ROUTES ---
-
+// (The rest of your file remains the same)
 // GET all URLs
 app.get('/api/urls', async (req, res) => {
     try {
@@ -42,12 +59,12 @@ app.post('/api/shorten', async (req, res) => {
         return res.status(400).json({ message: 'originalUrl is required' });
     }
     const shortCode = shortid.generate();
-    const shortUrl = `http://localhost:${PORT}/${shortCode}`;
+    const shortUrl = `https://rshortr-url.vercel.app/${shortCode}`; // Use your live backend URL
 
     try {
         let url = await Url.findOne({ originalUrl });
         if (url) {
-            res.status(200).json({ ...url.toObject(), shortUrl: `http://localhost:${PORT}/${url.shortCode}` });
+            res.status(200).json({ ...url.toObject(), shortUrl: `https://rshortr-url.vercel.app/${url.shortCode}` });
         } else {
             const newUrl = new Url({ originalUrl, shortCode });
             await newUrl.save();
